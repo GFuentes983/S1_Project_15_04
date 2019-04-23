@@ -7,8 +7,8 @@
 
    Filename: ws_cloud.js
 
-   Author:  
-   Date:    
+   Author: Gabriel Fuentes 
+   Date: 4.23.19    
    
    Function List
    =============
@@ -34,15 +34,48 @@
       Returns a randome integer between minVal and maxVal
 
 */
+// Steps 5-18 
+window.addEventListener('load', function() {
+  var wordContent = document.getElementById('speech').textContent.toLowerCase().replace(/[.,\\\/#!?$%\^&\*;:{}=\-_`'"~()\d]/g, "");
+  for (var i = 0; i < stopWords.length; i++) {
+  var stopWordsRE = new RegExp(`\\b${stopWords[i]}\\b`,'g');
+  wordContent = wordContent.replace(stopWordsRE, "");
+  }
+  wordContent = wordContent.trim();
+  wordContent = wordContent.replace(/\s+/g, " ");
+  var wordArray = wordContent.split(" ");
+  var uniqueWords = findUnique(wordArray);
+  uniqueWords.sort(sortByCount)
+  for (var i = uniqueWords.length; i > 100; i--) {
+    uniqueWords.pop();
+  }
+  var minimumCount = uniqueWords[99][1];
+  var top3Count = uniqueWords[2][1];
+  uniqueWords.sort(sortByWord);
+  for (var i = 0; i < uniqueWords.length; i++) {
+    var cloudWord = document.createElement("span");
+    cloudWord.textContent = uniqueWords[i][0];
+    var wordSize = 0.45 * (uniqueWords[i][1]/minimumCount);
+    if (wordSize >= 6) {
+      wordSize = 6;
+    }
+    cloudWord.style.fontSize = wordSize + "em";
+    cloudWord.style.transform = "rotate(" + randomValue(-30, 30) + "deg)";
+    if (uniqueWords[i][1] >= top3Count) {
+      cloudWord.style.color = "rgb(251, 191, 191)";
+      cloudWord.style.textShadow = "2px 2px 5px rgb(51, 51, 51)";
+    }
+    var cloud =  document.getElementById('cloud');
+    cloud.appendChild(cloudWord);
+  }
+
+});
 
 
 
 
 
-
-
-
-
+// Division --------------------------------------
 function findUnique(arr) {
    var prevWord;
    var unique = [];
